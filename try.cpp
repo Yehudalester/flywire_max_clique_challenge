@@ -38,6 +38,44 @@ vector<ll> attempt(ll x){
     }
     return clique;
 }
+vector<ll> try_benchmark(){
+    ifstream benchmark("benchmark_162.csv");
+    string str;
+    queue<ll> q;
+    vector<ll> clique;
+    map<ll,bool> vis;
+    map<ll,bool> in_clique;
+    ll edge_count=0;
+    while(getline(benchmark,str)){
+        ll a=0;
+        for(char c:str){
+            a*=10;
+            a+=c-'0';
+        }
+        q.push(a);
+        for(ll x:clique){
+            if(adj_m[{a,x}])edge_count++;
+        }
+        clique.push_back(a);
+        in_clique[a]=1;
+        vis[a]=1;
+    }
+    while(!q.empty()){
+        ll a=q.front();q.pop();
+        if(!in_clique[a]){
+        ll e=0;
+        for(ll node:clique){
+            e+=adj_m[{a,node}];
+        }
+        if(e+edge_count<clique.size()*(clique.size()+1)/f(clique.size()))continue;
+        edge_count+=e;
+        clique.push_back(a);
+        in_clique[a]=1;
+        }
+        for(ll nei:g[a])if(!vis[nei]){vis[nei]=1;q.push(nei);}
+    }
+    return clique;
+}
 int main(){
     ll best=285;
     ifstream edges("edges.csv");
@@ -67,8 +105,9 @@ int main(){
     sort(nodes.begin(),nodes.end(), [&](ll a, ll b){return deg[a]<deg[b]||(deg[a]==deg[b]&&a<b);});
     vector<ll> res;
     vector<ll> vect;
+    ll f=0;
     for(ll x:nodes){
-        vect=attempt(x);
+        if(f==0){vect=try_benchmark();f=1;}else vect=attempt(x);
         if(vect.size()>res.size()){swap(res,vect);cout << res.size() << " ";
         if(res.size()>best){
         ofstream result("result.csv");
