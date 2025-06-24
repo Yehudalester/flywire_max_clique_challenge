@@ -44,10 +44,10 @@ vector<ll> attempt(){
     if(ind2==-1)goto l;
     inside.insert(ind2);
     if(valid())goto l;
-    if(maxi>=mini){
+    if(maxi>=mini||rand()%7){
         inside.erase(ind);
     }
-    else{
+    if(!valid()){
         inside.erase(ind2);
     }
     l:
@@ -57,7 +57,7 @@ vector<ll> attempt(){
 }
 int main(){
     srand(time(0));
-    ll best=369;
+    ll best=200;
     ifstream edges("edges.csv");
     string str;
     while(getline(edges,str)){

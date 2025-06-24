@@ -34,7 +34,7 @@ int main(){
         deg[a]++;deg[b]++;
         adj_m[{a,b}]=adj_m[{b,a}]=1;
     }
-    ifstream ffff("result.csv");
+    ifstream ffff("results/result263_321.csv");
     vector<ll> res;
     while(getline(ffff,str)){
         ll a=0;

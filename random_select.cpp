@@ -7,6 +7,8 @@
 #include<random>
 #include<algorithm>
 #include<set>
+#pragma GCC optimize("Ofast,unroll-loops")
+#pragma GCC target("avx2")
 using namespace std;
 using ll=long long;
 map<ll,vector<ll>> g;
@@ -15,9 +17,6 @@ map<ll,ll> deg;
 vector<ll> nodes;
 mt19937 rng(time(0));
 inline ll f(ll n){
-    if(n<=4)return 2;
-    if(n<=50)return 4;
-    if(n<=100)return 6;
     return 8;
 }
 vector<ll> attempt(ll x){
@@ -42,7 +41,7 @@ vector<ll> attempt(ll x){
     return clique;
 }
 set<ll> inside;
-set<ll> nds;
+vector<ll> nds;
 bool valid(){
     ll count_edges=0;
     for(ll x:inside){
@@ -70,6 +69,7 @@ vector<ll> at(){
         for(ll x:inside){if(x==node)de=-1e18;
             if(adj_m[{node,x}])de++;}
         if(de>maxi||(rand()%2&&de==maxi))maxi=de,ind2=node;
+        if(maxi>mini)break;
     }
     if(ind2==-1){f=3;goto l;}
     inside.insert(ind2);
@@ -89,7 +89,8 @@ vector<ll> at(){
 vector<ll> try_improve(vector<ll> vec){
     while(!inside.empty())inside.erase(inside.begin());
     for(ll x:vec)inside.insert(x);
-    while(at().size()){
+    ll cnt=1e6;
+    while(cnt--&&at().size()){
         ;
     }
     vector<ll> res;
@@ -114,7 +115,6 @@ int main(){
             }
             i++;
         }
-        nds.insert(a);nds.insert(b);
         g[a].push_back(b);
         g[b].push_back(a);
         deg[a]++;deg[b]++;
@@ -122,6 +122,7 @@ int main(){
     }
     for(pair<ll,ll> p:deg){
         if(p.second*4>370)nodes.push_back(p.first);
+        nds.push_back(p.first);
     }
     vector<ll> res;
     vector<ll> vect;
@@ -129,12 +130,13 @@ int main(){
     srand(time(0));
     set<vector<ll>> cliques;
     ll trying=1000;
+    ll tttttt=1;
     while(trying--){
         vect=attempt(nodes[rand()%nodes.size()]);
         if(vect.size()>200)cliques.insert(vect);
-        if(vect.size()>res.size()){swap(res,vect);cout << res.size() << " ";
-        if(res.size()>best){
-        ofstream result("result.csv");
+        if(vect.size()>res.size()){swap(res,vect);cout << res.size()<<" "<< flush;
+        if(res.size()==vect.size()){
+        ofstream result("result"+to_string(tttttt++)+".csv");
         for(ll x:res){
             result << x <<"\n";
         }
@@ -144,13 +146,11 @@ int main(){
     for(vector<ll> c1:cliques){
                 vector<ll> veci=try_improve(c1);
                 if(veci.size()>res.size()){
-                    swap(res,veci);cout << res.size()<<" ";
+                    swap(res,veci);cout << res.size()<<" "<<flush;
                 }
-                if(res.size()>best){
-                    ofstream result("result.csv");
-                    for(ll x:res){
-                        result << x <<"\n";
-                    }
+                ofstream result("result"+to_string(tttttt++)+".csv");
+                for(ll x:res){
+                    result << x <<"\n";
                 }
             }
     return 0;
