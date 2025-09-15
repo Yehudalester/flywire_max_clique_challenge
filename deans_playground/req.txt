@@ -1,0 +1,9 @@
+pandas
+networkx
+numpy
+scipy
+matplotlib
+ipywidgets
+tqdm
+jupyter
+seaborn
