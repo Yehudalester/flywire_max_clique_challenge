@@ -7,3 +7,4 @@ ipywidgets
 tqdm
 jupyter
 seaborn
+scikit-learn
